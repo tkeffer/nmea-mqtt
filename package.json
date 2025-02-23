@@ -1,0 +1,22 @@
+{
+  "name": "nmea-mqtt",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Gateway to publish NMEA 0183 sentences to MQTT as JSON",
+  "license": "MIT",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "mqtt": "^5.10.3",
+    "nmea-simple": "^3.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
