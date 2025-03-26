@@ -13,6 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "baconjs": "^3.0.20",
     "mqtt": "^5.10.3",
     "nmea-simple": "^3.3.0"
   },
