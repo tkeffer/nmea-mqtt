@@ -1,8 +1,6 @@
 Need to filter output to specified NMEA sentence types.
 
-Need separate "config" file.
-
-Use Typescript?
+Many values can come from multiple sources. Need a way to pick which one.
 
 Refactor JSON packet to something less verbose.
 
