@@ -1,6 +1,7 @@
 Need to filter output to specified NMEA sentence types.
 
 Many values can come from multiple sources. Need a way to pick which one.
+But, that's the subscriber's problem.
 
 Refactor JSON packet to something less verbose.
 

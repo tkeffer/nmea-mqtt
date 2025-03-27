@@ -21,9 +21,13 @@ const getBusForType = (nmeaType) => {
         const bus = new Bacon.Bus();
         buses.set(nmeaType, bus);
         const debounceTime = options.DEBOUNCE_INTERVALS[nmeaType] || options.DEFAULT_DEBOUNCE_INTERVAL;
-        bus.debounceImmediate(debounceTime).onValue(({topic, message}) => {
-            mqttClient.publish(topic, JSON.stringify(message));
-            console.log(`Published: ${topic} ->`, message);
+        bus.debounceImmediate(debounceTime).onValue(({
+                                                         timestamp,
+                                                         topic,
+                                                         sentence
+                                                     }) => {
+            mqttClient.publish(topic, JSON.stringify({timestamp, sentence}));
+            console.log(`Published: ${topic} ->`, sentence);
         });
     }
     return buses.get(nmeaType);
@@ -31,19 +35,22 @@ const getBusForType = (nmeaType) => {
 
 // Connect to the NMEA socket
 const client = new net.Socket();
-client.connect(options.NMEA_PORT, options.NMEA_HOST, () =>
-    console.log(`Connected to NMEA server at ${options.NMEA_HOST}:${options.NMEA_PORT}`));
+client.connect(options.NMEA_PORT, options.NMEA_HOST,
+    () => console.log(`Connected to NMEA server at ${options.NMEA_HOST}:${options.NMEA_PORT}`));
 
 client.on('data', (data) => {
+    // Record the time the data was received
+    const timestamp = Date.now();
+    // It's possible to receive more than one NMEA sentence. Separate them.
     const lines = data.toString().split('\n');
     lines.forEach(line => {
         try {
             const trimmed = line.trim();
             if (trimmed) {
-                const parsed = parseNmeaSentence(trimmed);
-                const topic = `${options.MQTT_TOPIC_PREFIX}/${parsed.sentenceId}`;
-                const bus = getBusForType(parsed.sentenceId);
-                bus.push({topic, message: parsed});
+                const sentence = parseNmeaSentence(trimmed);
+                const topic = `${options.MQTT_TOPIC_PREFIX}/${sentence.sentenceId}`;
+                const bus = getBusForType(sentence.sentenceId);
+                bus.push({timestamp, topic, sentence});
             }
         } catch (err) {
             console.warn('Invalid NMEA sentence:', line);
