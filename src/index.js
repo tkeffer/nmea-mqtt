@@ -6,7 +6,10 @@ import {parseNmeaSentence} from 'nmea-simple';
 import {options} from './config.js';
 
 // MQTT Client
-const mqttClient = mqtt.connect(options.MQTT_BROKER);
+const mqttClient = mqtt.connect(options.MQTT_BROKER, {
+    username: options.mqtt_username,
+    password: options.mqtt_password
+});
 mqttClient.on('connect', () => console.log('Connected to MQTT broker.'));
 
 // Create a map to store Bacon.js buses for each NMEA sentence type
